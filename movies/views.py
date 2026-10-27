@@ -14,11 +14,11 @@ def index(request):
         movies = Movie.objects.all()
 
     if genre_val:
-        movies = Movie.objects.filter(genre__name = genre_val)
+        movies = movies.filter(genre__name = genre_val)
     if min_price_val:
-        movies = Movie.objects.filter(price__gte = min_price_val)
+        movies = movies.filter(price__gte = min_price_val)
     if max_price_val:
-        movies = Movie.objects.filter(price__lte = max_price_val)
+        movies = movies.filter(price__lte = max_price_val)
     
     template_data = {}
     template_data['title'] = 'Movies'
