@@ -1,17 +1,31 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review
+from .models import Movie, Review, Genre
 from django.contrib.auth.decorators import login_required
 
 def index(request):
     search_term = request.GET.get('search')
+    genre_val = request.GET.get('genre')
+    min_price_val = request.GET.get('min_price')
+    max_price_val = request.GET.get('max_price')
+
     if search_term:
         movies = Movie.objects.filter(name__icontains = search_term)
     else:
         movies = Movie.objects.all()
+
+    if genre_val:
+        movies = Movie.objects.filter(genre__name = genre_val)
+    if min_price_val:
+        movies = Movie.objects.filter(price__gte = min_price_val)
+    if max_price_val:
+        movies = Movie.objects.filter(price__lte = max_price_val)
+    
     template_data = {}
     template_data['title'] = 'Movies'
     template_data['movies'] = movies
+    template_data['genres'] = Genre.objects.all()
     return render(request, 'movies/index.html', {'template_data': template_data})
+
 def show(request, id):
     movie = Movie.objects.get(id = id)
     reviews = Review.objects.filter(movie=movie)
